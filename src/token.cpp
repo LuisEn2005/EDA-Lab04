@@ -20,7 +20,14 @@ std::string tokenTypeToString(TokenType type) {
         case TokenType::COMMA:          return "COMMA";
         case TokenType::SEMICOLON:      return "SEMICOLON";
         case TokenType::TOKEN_EOF:      return "EOF";
-        case TokenType::TOKEN_ERROR:    return "ERROR";
-        default:                        return "UNKNOWN";
     }
+    return "UNKNOWN";
+}
+
+std::string severityToString(Severity severity) {
+  switch (severity) {
+    case Severity::WARNING: return "WARNING";
+    case Severity::ERROR:   return "ERROR";
+  }
+  return "UNKNOWN";
 }

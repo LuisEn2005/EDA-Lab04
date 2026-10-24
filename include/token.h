@@ -26,16 +26,29 @@ enum class TokenType {
     SEMICOLON,        // ;
 
     TOKEN_EOF,        // Fin de entrada
-    TOKEN_ERROR       // Error léxico
 };
 
 struct Token {
     TokenType type;
     std::string lexeme;
+    std::string value;
     int line;
     int column;
 };
 
+enum class Severity {
+  WARNING,
+  ERROR
+};
+
+struct Diagnostic {
+  Severity severity;
+  std::string message;
+  int line;
+  int column;
+};
+
 std::string tokenTypeToString(TokenType type);
+std::string severityToString(Severity severity);
 
 #endif // TOKEN_H
