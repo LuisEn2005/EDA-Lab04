@@ -1,31 +1,6 @@
-#include "Lexer.h"
+#include "../include/lexer.h"
 #include <cctype>
 #include <utility>
-
-std::string tokenTypeToString(TokenType type) {
-    switch (type) {
-        case TokenType::KEYWORD_SELECT: return "KEYWORD_SELECT";
-        case TokenType::KEYWORD_FROM:   return "KEYWORD_FROM";
-        case TokenType::KEYWORD_WHERE:  return "KEYWORD_WHERE";
-        case TokenType::KEYWORD_AND:    return "KEYWORD_AND";
-        case TokenType::KEYWORD_OR:     return "KEYWORD_OR";
-        case TokenType::IDENTIFIER:      return "IDENTIFIER";
-        case TokenType::INTEGER_LITERAL: return "INTEGER_LITERAL";
-        case TokenType::FLOAT_LITERAL:   return "FLOAT_LITERAL";
-        case TokenType::STRING_LITERAL:  return "STRING_LITERAL";
-        case TokenType::EQUAL:          return "EQUAL";
-        case TokenType::NOT_EQUAL:      return "NOT_EQUAL";
-        case TokenType::LESS_THAN:      return "LESS_THAN";
-        case TokenType::GREATER_THAN:   return "GREATER_THAN";
-        case TokenType::LESS_EQUAL:     return "LESS_EQUAL";
-        case TokenType::GREATER_EQUAL:  return "GREATER_EQUAL";
-        case TokenType::COMMA:          return "COMMA";
-        case TokenType::SEMICOLON:      return "SEMICOLON";
-        case TokenType::TOKEN_EOF:      return "EOF";
-        case TokenType::TOKEN_ERROR:    return "ERROR";
-        default:                        return "UNKNOWN";
-    }
-}
 
 Lexer::Lexer(std::string source) : src(std::move(source)) {
     keywords = {
@@ -107,7 +82,7 @@ Token Lexer::nextToken() {
 
         if (peek() == '.' && pos + 1 < src.length() && std::isdigit(static_cast<unsigned char>(src[pos + 1]))) {
             isFloat = true;
-            lexeme += advance(); // Consumir '.'
+            lexeme += advance();
             while (pos < src.length() && std::isdigit(static_cast<unsigned char>(peek()))) {
                 lexeme += advance();
             }
@@ -116,17 +91,17 @@ Token Lexer::nextToken() {
         return {isFloat ? TokenType::FLOAT_LITERAL : TokenType::INTEGER_LITERAL, lexeme, startLine, startColumn};
     }
 
-    if (c == ''') {
+    if (c == '\'') {
         advance();
         std::string lexeme;
-        while (pos < src.length() && peek() != ''') {
+        while (pos < src.length() && peek() != '\'') {
             if (peek() == '\n') {
                 break;
             }
             lexeme += advance();
         }
 
-        if (peek() == ''') {
+        if (peek() == '\'') {
             advance();
             return {TokenType::STRING_LITERAL, lexeme, startLine, startColumn};
         } else {
