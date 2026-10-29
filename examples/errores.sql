@@ -1,0 +1,1 @@
+SELECT @col FROM tabla WHERE num = 12abc AND texto = 'sin cerrar;
