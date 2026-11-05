@@ -37,40 +37,6 @@ void printDiagnostics(const std::vector<Diagnostic>& diags) {
                   << " " << diag.message << "\n";
     }
 }
-/*
-//HAREMOS UNO QUE DERIVE DE SQL
-void runTestCase(const std::string& title, const std::string& source) {
-    std::cout << "========================================\n";
-    std::cout << "Prueba: " << title << "\n";
-    std::cout << "Entrada:\n" << source << "\n";
-    std::cout << "----------------------------------------\n";
-
-    Lexer lexer(source);
-    std::vector<Token> tokens = lexer.tokenizeAll();
-    printTokens(tokens);
-    printDiagnostics(lexer.diagnostics());
-    std::cout << "\n";
-}
-
-void runDemo() {
-    runTestCase("Sentencia SELECT completa",
-        "SELECT nombre, edad\n"
-        "FROM estudiantes\n"
-        "WHERE edad >= 18 AND carrera = 'CC' AND promedio <> 10.5;");
-
-    runTestCase("Operadores compuestos (<>, !=, <=, >=)",
-        "SELECT * FROM datos WHERE a <= 10 AND b >= 20 AND c <> 30 AND d != 40;");
-
-    runTestCase("Numeros: negativos, .5 y 5.",
-        "SELECT a FROM t WHERE x = -3 AND y = -.5 AND z = .5 AND w = 5.;");
-
-    runTestCase("Cadenas con escapes",
-        "SELECT a FROM t WHERE n = 'it\\'s' AND m = 'a\\\\b' AND k = 'x\\ny';");
-
-    runTestCase("Errores lexicos (cadena sin cerrar y smbolo no vlido)",
-        "SELECT campo FROM tabla WHERE texto = 'cadena incompleta;");
-}
-*/
 
 // Ejecuta un caso de prueba leyendo directamente un archivo .sql
 void runTestCaseFile(const std::string& title, const std::string& filepath) {

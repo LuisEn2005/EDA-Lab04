@@ -152,6 +152,14 @@ static void testScenario2() {
         }
     });
 
+    runTest("'*' es el token STAR (SELECT *)", [] {
+        Result r = lex("SELECT * FROM t");
+        Types expected = {TT::KEYWORD_SELECT, TT::STAR, TT::KEYWORD_FROM, TT::IDENTIFIER};
+        EXPECT(types(r) == expected);
+        EXPECT(r.tokens[1].lexeme == "*" && r.tokens[1].column == 8);
+        EXPECT(r.diags.empty());
+    });
+
     runTest("operadores sin espacios alrededor", [] {
         Result r = lex("a>=1");
         Types expected = {TT::IDENTIFIER, TT::GREATER_EQUAL, TT::INTEGER_LITERAL};
@@ -435,7 +443,7 @@ static void testScenario6() {
     scenario(6, "Errores lexicos");
 
     runTest("caracteres no admitidos (@ # $ % ^ & * ( ) ~ ?)", [] {
-        const char chars[] = {'@', '#', '$', '%', '^', '&', '*', '(', ')', '~', '?', '"', '.'};
+        const char chars[] = {'@', '#', '$', '%', '^', '&', '(', ')', '~', '?', '"', '.'};
         for (char c : chars) {
             Result r = lex(std::string(1, c));
             EXPECT(errors(r) == 1);

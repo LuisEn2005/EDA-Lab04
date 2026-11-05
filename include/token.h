@@ -24,6 +24,7 @@ enum class TokenType {
 
     COMMA,            // ,
     SEMICOLON,        // ;
+    STAR,             // *
 
     TOKEN_EOF,        // Fin de entrada
 };

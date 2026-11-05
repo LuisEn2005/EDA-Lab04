@@ -9,6 +9,7 @@ include_directories(include)
 add_library(lexer_core STATIC
     src/lexer.cpp
     src/token.cpp
+    src/input.cpp
 )
 
 add_executable(sql_lexer src/main.cpp)
