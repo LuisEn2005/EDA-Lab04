@@ -108,7 +108,7 @@ void runDemo() {
 }
 
 int main(int argc, char* argv[]) {
-    // Modo 1: Demostracion
+    
     if (argc > 1 && std::string(argv[1]) == "--demo") {
         runDemo();
         return 0;
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 
     std::string source;
 
-    // Modo 2: Lectura desde archivo
+    
     if (argc > 1) {
         std::string filepath = argv[1];
         std::string errorMessage;
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     } 
-    // Modo 3: Lectura desde entrada estandar (stdin)
+    
     else {
         source = readStandardInput();
     }
@@ -136,6 +136,6 @@ int main(int argc, char* argv[]) {
     printTokens(tokens);
     printDiagnostics(lexer.diagnostics());
 
-    // Retorna codigo 1 si hubo algun error lexico, 0 en caso de exito
+    
     return lexer.hasErrors() ? 1 : 0;
 }

@@ -1,4 +1,4 @@
-#ifndef INPUT_H
+table#ifndef INPUT_H
 #define INPUT_H
 
 #include <string>
