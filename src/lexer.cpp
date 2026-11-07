@@ -221,6 +221,7 @@ std::optional<Token> Lexer::scanOperator(int startLine, int startColumn) {
     char c = advance();
     switch (c) {
         case ',': return Token{TokenType::COMMA,     ",", ",", startLine, startColumn};
+        case '*': return Token{TokenType::STAR,      "*", "*", startLine, startColumn};
         case ';': return Token{TokenType::SEMICOLON, ";", ";", startLine, startColumn};
         case '=': return Token{TokenType::EQUAL,     "=", "=", startLine, startColumn};
         case '>':
@@ -285,7 +286,7 @@ std::optional<Token> Lexer::scanToken() {
     if (c == '\'') return scanString(startLine, startColumn);
 
     switch (c) {
-        case ',': case ';': case '=': case '<': case '>': case '!':
+        case ',': case ';': case '*': case '=': case '<': case '>': case '!':
             return scanOperator(startLine, startColumn);
         default:
             return scanInvalid(startLine, startColumn);

@@ -40,6 +40,7 @@ public:
     std::vector<Token> tokenizeAll();
 
     const std::vector<Diagnostic> & diagnostics() const { return diags; }
+    
     bool hasErrors() const;
 };
 

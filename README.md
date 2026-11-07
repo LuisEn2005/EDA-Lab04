@@ -1,49 +1,59 @@
-# Analizador Léxico SQL en C++
+# EDA-Lab04: Analizador Léxico y Sintáctico SQL (SELECT)
 
-Este proyecto implementa la Práctica de Laboratorio 4: **Analizador Léxico SQL** para un subconjunto de sentencias `SELECT`.
+**Curso:** Estructuras de Datos Avanzadas — UNSA, Escuela Profesional de Ciencia de la Computación  
+**Lenguaje:** C++20 · **Build:** CMake ≥ 3.14
 
-## Estructura del Proyecto
+- **Práctica 4 (terminada):** analizador léxico.
+- **Práctica 5 (en curso):** analizador sintáctico predictivo LL(1) no recursivo. Los archivos `grammar`, `parse_table` y `parser` son esqueletos pendientes de implementar.
+
+## Estructura
 
 ```
-sql_lexer/
-├── CMakeLists.txt
-├── README.md
-├── include/
-│   ├── Token.h
-│   └── Lexer.h
-└── src/
-    ├── Lexer.cpp
-    └── main.cpp
-    └── token.cpp
-
-└── tests/
+include/  token.h lexer.h input.h            (listos)
+          grammar.h parse_table.h parser.h   (pendientes, Práctica 5)
+src/      token.cpp lexer.cpp input.cpp main.cpp
+tests/    test_lexer.cpp                     (listo)
+          test_parser.cpp                    (pendiente)
+examples/ *.sql                              (entradas de prueba)
 ```
 
-## Compilación y Ejecución
-
-### Opción 1: Usando CMake
+## Compilar y ejecutar
 
 ```bash
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
-make
-./sql_lexer
+cmake --build .
+./test_lexer                         # pruebas del lexer
+./sql_lexer ../examples/valida.sql   # analizar un archivo
+./sql_lexer --demo                   # ejecutar los ejemplos (desde la raíz del repo)
+echo "SELECT * FROM t;" | ./sql_lexer
 ```
 
-### Opción 2: Compilación Directa con g++ / clang++
+(`--demo` busca `examples/` relativo al directorio actual, así que ejecútalo desde la raíz: `./build/sql_lexer --demo`.)
 
-```bash
-g++ -std=c++20 -Iinclude src/Lexer.cpp src/main.cpp -o sql_lexer
-./sql_lexer
+## Tokens
+
+| Token | Detalle |
+|---|---|
+| `KEYWORD_SELECT/FROM/WHERE/AND/OR` | insensibles a mayúsculas; el lexema conserva la escritura original |
+| `IDENTIFIER` | `[A-Za-z_][A-Za-z0-9_]*`, sensible a mayúsculas |
+| `INTEGER_LITERAL`, `FLOAT_LITERAL` | el `-` va pegado al número; `.5` y `5.` se aceptan con advertencia (valor `0.5` / `5.0`) |
+| `STRING_LITERAL` | `'texto'`; lexema y valor sin comillas; escapes `\'` y `\\`; escape desconocido = advertencia |
+| `EQUAL`, `NOT_EQUAL` (`<>` o `!=`), `LESS_THAN`, `GREATER_THAN`, `LESS_EQUAL`, `GREATER_EQUAL` | máximo acierto (`>=`, `<=`, `<>`, `!=` son un solo token) |
+| `COMMA`, `SEMICOLON`, `STAR` (`*`) | puntuación y proyección total |
+| `TOKEN_EOF` | siempre es el último token (único) |
+
+## Reglas y errores léxicos
+
+- Posiciones (línea, columna) desde 1; `\r\n` cuenta como un salto.
+- Los errores **no son tokens**: se acumulan en `diagnostics()` (`ERROR` / `WARNING`) y el análisis continúa.
+- Son error: caracteres no válidos (`@ # $ ...`), `!` solo, `-` suelto, cadena sin cerrar (o con salto de línea real), `1abc`, `1.2.3`, caracteres no ASCII fuera de cadenas.
+- `hasErrors()` es verdadero solo si hay `ERROR` (las advertencias no cuentan).
+
+## Interfaz para el parser
+
+```cpp
+Lexer lexer(source);
+std::vector<Token> tokens = lexer.tokenizeAll();   // termina en TOKEN_EOF
+// o bien: Token t = lexer.nextToken();            // repite EOF al final
 ```
-
-## Características Soportadas
-
-- **Palabras Reservadas**: `SELECT`, `FROM`, `WHERE`, `AND`, `OR` (insensible a mayúsculas/minúsculas).
-- **Identificadores y Literales**: Cadenas de texto (`'texto'`), enteros, decimales.
-- **Operadores Relacionales**: `=`, `<>`, `!=`, `<`, `>`, `<=`, `>=`.
-- **Signos de Puntuación**: Coma (`,`), Punto y coma (`;`).
-- **Control de Posición**: Registro de número de línea y columna por cada token.
-- **Manejo de Errores**: Detección de caracteres inválidos y cadenas sin cerrar.
-# EDA-Lab04

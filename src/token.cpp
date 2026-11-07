@@ -19,6 +19,7 @@ std::string tokenTypeToString(TokenType type) {
         case TokenType::GREATER_EQUAL:  return "GREATER_EQUAL";
         case TokenType::COMMA:          return "COMMA";
         case TokenType::SEMICOLON:      return "SEMICOLON";
+        case TokenType::STAR:           return "STAR";
         case TokenType::TOKEN_EOF:      return "EOF";
     }
     return "UNKNOWN";

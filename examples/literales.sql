@@ -1,0 +1,1 @@
+SELECT id FROM t WHERE entero = -42 AND dec1 = 3.14 AND dec2 = .5 AND dec3 = 5.;

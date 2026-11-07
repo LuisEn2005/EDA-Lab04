@@ -1,0 +1,1 @@
+SELECT a, b FROM tabla WHERE x <= 10 AND y >= 20 AND z <> 30 AND w != 40;
