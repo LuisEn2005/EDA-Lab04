@@ -4,17 +4,18 @@
 **Lenguaje:** C++20 · **Build:** CMake ≥ 3.14
 
 - **Práctica 4 (terminada):** analizador léxico.
-- **Práctica 5 (en curso):** analizador sintáctico predictivo LL(1) no recursivo. Los archivos `grammar`, `parse_table` y `parser` son esqueletos pendientes de implementar.
+- **Práctica 5 (en curso):** analizador sintáctico predictivo LL(1) no recursivo, en `parser_ll1/`. Hecho: gramática, FIRST/FOLLOW y motor por pila. Pendiente: construcción de la tabla (`parse_table.cpp`), traza, pruebas de consultas inválidas, ejecutable e informe.
 
 ## Estructura
 
 ```
-include/  token.h lexer.h input.h            (listos)
-          grammar.h parse_table.h parser.h   (pendientes, Práctica 5)
-src/      token.cpp lexer.cpp input.cpp main.cpp
-tests/    test_lexer.cpp                     (listo)
-          test_parser.cpp                    (pendiente)
-examples/ *.sql                              (entradas de prueba)
+include/ src/ tests/ examples/     Práctica 4: lexer (token, lexer, input) y sus pruebas
+parser_ll1/                        Práctica 5
+├── include/  grammar.h parser.h parse_table.h
+├── src/      grammar.cpp parser.cpp parse_table.cpp (pendiente)
+├── tests/    test_parser.cpp
+├── examples/ parser_valid_*.sql  (parser_invalid.sql pendiente)
+└── docs/     gramatica.md        (gramática, FIRST/FOLLOW y tabla derivados a mano)
 ```
 
 ## Compilar y ejecutar
@@ -24,6 +25,7 @@ mkdir build && cd build
 cmake ..
 cmake --build .
 ./test_lexer                         # pruebas del lexer
+./test_parser                        # pruebas de la gramática y del motor LL(1)
 ./sql_lexer ../examples/valida.sql   # analizar un archivo
 ./sql_lexer --demo                   # ejecutar los ejemplos (desde la raíz del repo)
 echo "SELECT * FROM t;" | ./sql_lexer
