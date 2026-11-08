@@ -1,6 +1,6 @@
 # Práctica 5 — Gramática LL(1) para SELECT
 
-> Estos conjuntos y la tabla también se calculan en código (`grammar.cpp`, `parse_table.cpp`) y `test_parser` verifica que coinciden con este documento. Ver `./sql_parser --info`.
+> FIRST y FOLLOW también se calculan en código (`grammar.cpp`) y `test_parser` verifica que coinciden con este documento y con la tabla de la sección 7.
 
 ## 1. Terminales (salida del Lexer de la Práctica 4)
 

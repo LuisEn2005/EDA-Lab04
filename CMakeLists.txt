@@ -27,3 +27,7 @@ add_library(parser_core STATIC
 )
 target_include_directories(parser_core PUBLIC parser_ll1/include)
 target_link_libraries(parser_core PUBLIC lexer_core)
+
+add_executable(test_parser parser_ll1/tests/test_parser.cpp)
+target_link_libraries(test_parser PRIVATE parser_core)
+add_test(NAME parser_tests COMMAND test_parser)
