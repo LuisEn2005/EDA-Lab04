@@ -1,12 +1,14 @@
 // Ejecutable de la Practica 5: lexer (Practica 4) + parser LL(1) con traza.
 //
 // Uso:
-//   ./parser_ll1 consulta.sql          analiza el archivo (con traza paso a paso)
-//   ./parser_ll1 --quiet consulta.sql  sin traza, solo el resultado
+//   ./parser_ll1 archivo.sql           analiza el archivo (con traza paso a paso)
+//   ./parser_ll1 --quiet archivo.sql   sin traza, solo el resultado
 //   ./parser_ll1 --tables              imprime gramatica, FIRST/FOLLOW y la tabla M[A,a]
+//   ./parser_ll1 --help                muestra este uso
 //   echo "SELECT * FROM t;" | ./parser_ll1     lee de la entrada estandar
 //
-// Codigos de salida: 0 = aceptada, 1 = error sintactico, 2 = error lexico, 3 = no se pudo leer.
+// Codigos de salida: 0 = aceptada, 1 = error sintactico, 2 = error lexico,
+//                    3 = no se pudo leer el archivo u opcion desconocida.
 
 #include <iostream>
 #include <string>
@@ -20,6 +22,12 @@
 #include "trace.h"
 
 namespace {
+
+void printUsage(std::ostream& os) {
+    os << "Uso: parser_ll1 [--quiet] [archivo.sql]   (sin archivo: lee la entrada estandar)\n"
+       << "     parser_ll1 --tables                  gramatica, FIRST/FOLLOW y tabla M[A, a]\n"
+       << "     parser_ll1 --help                    muestra este uso\n";
+}
 
 void printTables() {
     ll1::printGrammar(std::cout);
@@ -37,8 +45,14 @@ int main(int argc, char* argv[]) {
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
+        if (arg == "--help" || arg == "-h") { printUsage(std::cout); return 0; }
         if (arg == "--tables") { printTables(); return 0; }
         if (arg == "--quiet")  { quiet = true; continue; }
+        if (arg.size() > 1 && arg[0] == '-') {          // opcion desconocida: no tratarla como archivo
+            std::cerr << "Opcion desconocida: " << arg << "\n";
+            printUsage(std::cerr);
+            return 3;
+        }
         path = arg;
     }
 
