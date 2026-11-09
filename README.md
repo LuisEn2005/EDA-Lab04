@@ -4,18 +4,19 @@
 **Lenguaje:** C++20 · **Build:** CMake ≥ 3.14
 
 - **Práctica 4 (terminada):** analizador léxico.
-- **Práctica 5 (en curso):** analizador sintáctico predictivo LL(1) no recursivo, en `parser_ll1/`. Hecho: gramática, FIRST/FOLLOW y motor por pila. Pendiente: construcción de la tabla (`parse_table.cpp`), traza, pruebas de consultas inválidas, ejecutable e informe.
+- **Práctica 5 (implementada; falta el informe PDF):** analizador sintáctico predictivo LL(1) no recursivo, en `parser_ll1/`: gramática, FIRST/FOLLOW, tabla M[A, a] construida en código, motor por pila, errores con posición, traza paso a paso y pruebas.
 
 ## Estructura
 
 ```
 include/ src/ tests/ examples/     Práctica 4: lexer (token, lexer, input) y sus pruebas
 parser_ll1/                        Práctica 5
-├── include/  grammar.h parser.h parse_table.h
-├── src/      grammar.cpp parser.cpp parse_table.cpp (pendiente)
-├── tests/    test_parser.cpp
-├── examples/ parser_valid_*.sql  (parser_invalid.sql pendiente)
-└── docs/     gramatica.md        (gramática, FIRST/FOLLOW y tabla derivados a mano)
+├── include/  grammar.h parse_table.h parser.h trace.h
+├── src/      grammar.cpp parse_table.cpp parser.cpp trace.cpp main.cpp
+├── tests/    test_parser.cpp          (gramática y motor, con tabla de referencia)
+│             test_tabla_errores.cpp   (tabla construida, traza y consultas inválidas)
+├── examples/ parser_valid_*.sql  parser_invalid*.sql
+└── docs/     gramatica.md  traza_ejemplo.txt
 ```
 
 ## Compilar y ejecutar
@@ -26,12 +27,44 @@ cmake ..
 cmake --build .
 ./test_lexer                         # pruebas del lexer
 ./test_parser                        # pruebas de la gramática y del motor LL(1)
+./test_parser_tabla                  # pruebas de la tabla, la traza y las consultas inválidas
+ctest                                # corre las tres suites
 ./sql_lexer ../examples/valida.sql   # analizar un archivo
 ./sql_lexer --demo                   # ejecutar los ejemplos (desde la raíz del repo)
 echo "SELECT * FROM t;" | ./sql_lexer
 ```
 
 (`--demo` busca `examples/` relativo al directorio actual, así que ejecútalo desde la raíz: `./build/sql_lexer --demo`.)
+
+## Analizador sintáctico (Práctica 5)
+
+Ejecutable `parser_ll1` (lexer + parser LL(1)); por defecto muestra la traza paso a paso.
+
+```bash
+./parser_ll1 ../parser_ll1/examples/parser_valid_complex.sql          # con traza
+./parser_ll1 --quiet ../parser_ll1/examples/parser_valid_simple.sql   # solo el resultado
+./parser_ll1 --tables                                                 # gramática, FIRST/FOLLOW y tabla M[A, a]
+echo "SELECT a FROM ;" | ./parser_ll1 --quiet                         # lee la entrada estándar
+./parser_ll1 --help
+```
+
+| Código de salida | Significado |
+|---|---|
+| `0` | consulta aceptada |
+| `1` | error sintáctico (línea, columna, token encontrado y tokens esperados) |
+| `2` | error léxico (la consulta se rechaza sin llegar al parser) |
+| `3` | no se pudo leer el archivo u opción desconocida |
+
+Modo todo o nada: ante el primer error léxico o sintáctico se detiene y se reporta. Las advertencias del lexer no bloquean el análisis.
+
+Gramática aceptada (una sentencia por entrada; `AND` tiene mayor precedencia que `OR`; sin paréntesis):
+```
+Query ::= SELECT ( * | id { , id } ) FROM id [ WHERE Cond ] ;
+Cond  ::= Pred { AND Pred } { OR Pred { AND Pred } }
+Pred  ::= id RelOp ( int | float | string | id )
+RelOp ::= = | <> | != | < | > | <= | >=
+```
+La versión LL(1) (24 producciones), los conjuntos FIRST/FOLLOW y la tabla están en `parser_ll1/docs/gramatica.md`; un ejemplo de traza, en `parser_ll1/docs/traza_ejemplo.txt`.
 
 ## Tokens
 

@@ -1,0 +1,1 @@
+FROM estudiantes SELECT nombre;

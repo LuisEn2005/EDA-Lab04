@@ -1,0 +1,25 @@
+Paso  Pila (tope a la izq.)                         Entrada                                 Accion
+------------------------------------------------------------------------------------------------------------------------
+1     Query $                                       SELECT a FROM t WHERE x = 1 ; $         Query -> SELECT SelectList FROM id WhereOpt ;
+2     SELECT SelectList FROM id WhereOpt ; $        SELECT a FROM t WHERE x = 1 ; $         match SELECT
+3     SelectList FROM id WhereOpt ; $               a FROM t WHERE x = 1 ; $                SelectList -> id IdListP
+4     id IdListP FROM id WhereOpt ; $               a FROM t WHERE x = 1 ; $                match id
+5     IdListP FROM id WhereOpt ; $                  FROM t WHERE x = 1 ; $                  IdListP -> eps
+6     FROM id WhereOpt ; $                          FROM t WHERE x = 1 ; $                  match FROM
+7     id WhereOpt ; $                               t WHERE x = 1 ; $                       match id
+8     WhereOpt ; $                                  WHERE x = 1 ; $                         WhereOpt -> WHERE Cond
+9     WHERE Cond ; $                                WHERE x = 1 ; $                         match WHERE
+10    Cond ; $                                      x = 1 ; $                               Cond -> AndCond CondP
+11    AndCond CondP ; $                             x = 1 ; $                               AndCond -> Pred AndP
+12    Pred AndP CondP ; $                           x = 1 ; $                               Pred -> id RelOp Value
+13    id RelOp Value AndP CondP ; $                 x = 1 ; $                               match id
+14    RelOp Value AndP CondP ; $                    = 1 ; $                                 RelOp -> =
+15    = Value AndP CondP ; $                        = 1 ; $                                 match =
+16    Value AndP CondP ; $                          1 ; $                                   Value -> int
+17    int AndP CondP ; $                            1 ; $                                   match int
+18    AndP CondP ; $                                ; $                                     AndP -> eps
+19    CondP ; $                                     ; $                                     CondP -> eps
+20    ; $                                           ; $                                     match ;
+21    $                                             $                                       ACEPTAR
+
+RESULTADO: ACEPTADA (sintacticamente valida)
