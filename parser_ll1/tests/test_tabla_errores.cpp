@@ -2,6 +2,7 @@
 // Usa la tabla REAL (defaultParseTable), construida automaticamente desde FIRST/FOLLOW.
 // Ejecutar:  ./build/test_parser_tabla
 
+#include <cctype>
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -155,6 +156,21 @@ int main() {
         EXPECT(out.find("WhereOpt -> WHERE Cond") != std::string::npos);
         EXPECT(out.find("IdListP -> eps") != std::string::npos);
         EXPECT(out.find("ACEPTAR") != std::string::npos);
+    });
+    runTest("la traza separa las columnas Entrada y Accion aun con una consulta larga", [] {
+        Lexer lexer("SELECT nombre, edad, carrera FROM estudiantes "
+                    "WHERE edad >= 18 AND carrera = 'CC' OR promedio <> 10.5 AND codigo != 7;");
+        std::ostringstream os;
+        ParseResult r = parseTokens(lexer.tokenizeAll(), TABLE, makeTracer(os));
+        EXPECT(r.accepted);
+        const std::string out = os.str();
+        // Entre la entrada (que termina en '$') y la accion debe haber al menos un espacio.
+        EXPECT(out.find("; $  Query -> SELECT SelectList FROM id WhereOpt ;") != std::string::npos);
+        bool glued = false;
+        for (size_t i = 0; i + 1 < out.size(); ++i) {
+            if (out[i] == '$' && std::isalpha(static_cast<unsigned char>(out[i + 1]))) glued = true;
+        }
+        EXPECT(!glued);
     });
     runTest("stackToString: tope a la izquierda", [] {
         std::vector<Symbol> st = {Symbol::T(T::END), Symbol::N(N::QUERY)};

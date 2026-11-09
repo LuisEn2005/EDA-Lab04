@@ -28,14 +28,14 @@ std::string remainingInput(const std::vector<Token>& tokens, size_t position) {
 
 void printTraceHeader(std::ostream& os) {
     os << std::left << std::setw(6) << "Paso" << std::setw(46) << "Pila (tope a la izq.)"
-       << std::setw(40) << "Entrada" << "Accion\n";
+       << std::setw(40) << "Entrada" << "  " << "Accion\n";
     os << std::string(120, '-') << "\n";
 }
 
 StepObserver makeTracer(std::ostream& os) {
     return [&os](const StepEvent& e) {
         os << std::left << std::setw(6) << e.step << std::setw(46) << stackToString(e.stack)
-           << std::setw(40) << remainingInput(e.tokens, e.position) << e.action << "\n";
+           << std::setw(40) << remainingInput(e.tokens, e.position) << "  " << e.action << "\n";
     };
 }
 
