@@ -1,0 +1,1 @@
+SELECT nombre, edad FROM ;
