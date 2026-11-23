@@ -39,18 +39,15 @@ namespace sem {
       }
       std::vector<std::unique_ptr<ASTNode>> newSelectList;
       for (auto& item : n.selectList) {
-        if (item->kind() == NodeKind::STAR) {
-          if (!currentTable.empty()) {
-            auto tableInfo = catalog.findTable(currentTable);
-            if (tableInfo) {
-              for (const auto& col : tableInfo->columns) {
-                auto colNode = std::make_unique<ColumnNode>(item->line, item->column, col.name);
-                colNode->inferredType = col.type;
-                newSelectList.push_back(std::move(colNode));
-              }
-            }
+        const TableInfo* tableInfo = currentTable.empty() ? nullptr : catalog.findTable(currentTable);
+        if (item->kind() == NodeKind::STAR && tableInfo) {
+          for (const auto& col : tableInfo->columns) {
+            auto colNode = std::make_unique<ColumnNode>(item->line, item->column, col.name);
+            colNode->inferredType = col.type;
+            newSelectList.push_back(std::move(colNode));
           }
         } else {
+          // Cualquier otro nodo, o un '*' cuya tabla no existe: se conserva (no se descarta).
           newSelectList.push_back(std::move(item));
         }
       }

@@ -1,4 +1,5 @@
 #include "../include/catalog.h"
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -52,6 +53,13 @@ namespace sem {
       return false;
     }
 
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return loadFromString(buffer.str(), error);
+  }
+
+  bool CatalogManager::loadFromString(const std::string& text, std::string& error) {
+    std::istringstream file(text);
     std::string line;
     bool isFirstLine = true;
 
@@ -87,6 +95,13 @@ namespace sem {
       }
     }
     return true;
+  }
+
+  std::vector<std::string> CatalogManager::tableNames() const {
+    std::vector<std::string> names;
+    for (const auto& kv : tables) names.push_back(kv.first);
+    std::sort(names.begin(), names.end());
+    return names;
   }
 
   const TableInfo* CatalogManager::findTable(const std::string& name) const {

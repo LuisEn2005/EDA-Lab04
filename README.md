@@ -5,6 +5,7 @@
 
 - **Práctica 4 (terminada):** analizador léxico.
 - **Práctica 5 (implementada; falta el informe PDF):** analizador sintáctico predictivo LL(1) no recursivo, en `parser_ll1/`: gramática, FIRST/FOLLOW, tabla M[A, a] construida en código, motor por pila, errores con posición, traza paso a paso y pruebas.
+- **Práctica 6:** analizador semántico, tabla de símbolos (catálogo) y AST decorado, en `semantic_analyzer/` (ver la sección "Analizador semántico (Práctica 6)").
 
 ## Estructura
 
@@ -65,6 +66,38 @@ Pred  ::= id RelOp ( int | float | string | id )
 RelOp ::= = | <> | != | < | > | <= | >=
 ```
 La versión LL(1) (24 producciones), los conjuntos FIRST/FOLLOW y la tabla están en `parser_ll1/docs/gramatica.md`; un ejemplo de traza, en `parser_ll1/docs/traza_ejemplo.txt`.
+
+## Analizador semántico (Práctica 6)
+
+Flujo: SQL → lexer → parser LL(1) → constructor del AST (SDT) → analizador semántico (Visitor + catálogo) → AST decorado o lista de errores. No se modifican el lexer ni el parser.
+
+```
+semantic_analyzer/
+├── include/  ast.h ast_builder.h ast_printer.h catalog.h data_type.h semantic_analyzer.h semantic_error.h
+├── src/      ast_builder.cpp ast_printer.cpp catalog.cpp semantic_analyzer.cpp main.cpp
+├── tests/    test_semantic.cpp  test_errores.cpp  test_ast_catalog.cpp  test_helpers.h
+├── data/     catalog.csv          (9 tablas: INT, FLOAT, VARCHAR, BOOLEAN)
+├── examples/ semantic_valid_*.sql  semantic_invalid_*.sql
+└── docs/     sdt.md  ast_clases.md  decisiones.md
+```
+
+```bash
+ctest --output-on-failure                                            # las 6 suites (lexer, parser y semántica)
+./semantic_analyzer ../semantic_analyzer/examples/semantic_valid_star.sql   # AST y AST decorado
+./semantic_analyzer --quiet ../semantic_analyzer/examples/semantic_invalid_tipos.sql
+./semantic_analyzer --catalog otro.csv consulta.sql                  # catálogo alternativo
+echo "SELECT * FROM usuarios;" | ./semantic_analyzer --quiet
+```
+
+| Código de salida | Significado |
+|---|---|
+| `0` | consulta semánticamente válida |
+| `1` | error sintáctico |
+| `2` | error léxico |
+| `3` | uso, lectura, catálogo o construcción del AST |
+| `4` | errores semánticos (todos se acumulan y se reportan con línea, columna e identificador) |
+
+Formato de los errores: `[ERROR semantico] línea:columna TIPO: descripción [identificador o expresión conflictiva]`. Las decisiones de diseño, el SDT y el diagrama de clases del AST están en `semantic_analyzer/docs/`.
 
 ## Tokens
 

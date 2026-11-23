@@ -37,8 +37,10 @@ namespace sem {
 
   inline std::string format(const SemanticDiagnostic& d) {
     std::string prefix = (d.severity == Severity::ERROR) ? "[ERROR semantico] " : "[ADVERTENCIA semantica] ";
-    return prefix + std::to_string(d.line) + ":" + std::to_string(d.column) + " " + toString(d.kind) +
+    std::string out = prefix + std::to_string(d.line) + ":" + std::to_string(d.column) + " " + toString(d.kind) +
       ": " + d.message;
+    if (!d.subject.empty()) out += " [" + d.subject + "]";   // identificador o expresion conflictiva
+    return out;
   }
 
 }

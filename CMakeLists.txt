@@ -41,3 +41,34 @@ target_link_libraries(parser_ll1 PRIVATE parser_core)
 add_executable(test_parser_tabla parser_ll1/tests/test_tabla_errores.cpp)
 target_link_libraries(test_parser_tabla PRIVATE parser_core)
 add_test(NAME parser_tabla_tests COMMAND test_parser_tabla)
+
+# ---------------- Practica 6: analizador semantico ----------------
+add_library(semantic_core STATIC
+    semantic_analyzer/src/ast_builder.cpp
+    semantic_analyzer/src/ast_printer.cpp
+    semantic_analyzer/src/catalog.cpp
+    semantic_analyzer/src/semantic_analyzer.cpp
+)
+target_include_directories(semantic_core PUBLIC semantic_analyzer/include)
+target_link_libraries(semantic_core PUBLIC parser_core)
+
+add_executable(semantic_analyzer semantic_analyzer/src/main.cpp)
+target_link_libraries(semantic_analyzer PRIVATE semantic_core)
+target_compile_definitions(semantic_analyzer PRIVATE
+    DEFAULT_CATALOG="${CMAKE_SOURCE_DIR}/semantic_analyzer/data/catalog.csv")
+
+add_executable(test_semantic semantic_analyzer/tests/test_semantic.cpp)
+target_link_libraries(test_semantic PRIVATE semantic_core)
+add_test(NAME semantic_tests COMMAND test_semantic)
+
+# Pruebas semanticas adicionales (errores con posicion; catalogo y AST)
+foreach(t test_semantic_errores:test_errores test_semantic_ast:test_ast_catalog)
+    string(REPLACE ":" ";" parts ${t})
+    list(GET parts 0 tname)
+    list(GET parts 1 tfile)
+    add_executable(${tname} semantic_analyzer/tests/${tfile}.cpp)
+    target_include_directories(${tname} PRIVATE semantic_analyzer/tests)
+    target_link_libraries(${tname} PRIVATE semantic_core)
+    target_compile_definitions(${tname} PRIVATE SEMANTIC_DIR="${CMAKE_SOURCE_DIR}/semantic_analyzer")
+    add_test(NAME ${tname} COMMAND ${tname})
+endforeach()
