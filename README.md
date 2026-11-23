@@ -26,12 +26,12 @@ parser_ll1/                        Práctica 5
 mkdir build && cd build
 cmake ..
 cmake --build .
-./test_lexer                         # pruebas del lexer
-./test_parser                        # pruebas de la gramática y del motor LL(1)
-./test_parser_tabla                  # pruebas de la tabla, la traza y las consultas inválidas
-ctest                                # corre las tres suites
-./sql_lexer ../examples/valida.sql   # analizar un archivo
-./sql_lexer --demo                   # ejecutar los ejemplos (desde la raíz del repo)
+./test_lexer
+./test_parser
+./test_parser_tabla
+ctest
+./sql_lexer ../examples/valida.sql
+./sql_lexer --demo
 echo "SELECT * FROM t;" | ./sql_lexer
 ```
 
