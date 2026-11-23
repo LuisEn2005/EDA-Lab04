@@ -42,10 +42,10 @@ echo "SELECT * FROM t;" | ./sql_lexer
 Ejecutable `parser_ll1` (lexer + parser LL(1)); por defecto muestra la traza paso a paso.
 
 ```bash
-./parser_ll1 ../parser_ll1/examples/parser_valid_complex.sql          # con traza
-./parser_ll1 --quiet ../parser_ll1/examples/parser_valid_simple.sql   # solo el resultado
-./parser_ll1 --tables                                                 # gramática, FIRST/FOLLOW y tabla M[A, a]
-echo "SELECT a FROM ;" | ./parser_ll1 --quiet                         # lee la entrada estándar
+./parser_ll1 ../parser_ll1/examples/parser_valid_complex.sql
+./parser_ll1 --quiet ../parser_ll1/examples/parser_valid_simple.sql
+./parser_ll1 --tables
+echo "SELECT a FROM ;" | ./parser_ll1 --quiet
 ./parser_ll1 --help
 ```
 
@@ -82,10 +82,10 @@ semantic_analyzer/
 ```
 
 ```bash
-ctest --output-on-failure                                            # las 6 suites (lexer, parser y semántica)
-./semantic_analyzer ../semantic_analyzer/examples/semantic_valid_star.sql   # AST y AST decorado
+ctest --output-on-failure
+./semantic_analyzer ../semantic_analyzer/examples/semantic_valid_star.sql
 ./semantic_analyzer --quiet ../semantic_analyzer/examples/semantic_invalid_tipos.sql
-./semantic_analyzer --catalog otro.csv consulta.sql                  # catálogo alternativo
+./semantic_analyzer --catalog otro.csv consulta.sql
 echo "SELECT * FROM usuarios;" | ./semantic_analyzer --quiet
 ```
 
